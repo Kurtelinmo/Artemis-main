@@ -1,0 +1,37 @@
+{% if "misconfigured_email" in data.contains_type %}
+    <li>{% trans %}The following domains don't have properly configured e-mail sender verification mechanisms:{% endtrans %}
+        <ul>
+            {% for report in data.reports %}
+                {% if report.report_type == "misconfigured_email" %}
+                    <li>
+                        {% if report.additional_data.is_warning %}
+                            {{ _("Warning:") }}
+                        {% else %}
+                            {{ _("Error:") }}
+                        {% endif %}
+
+                        {{ report.target }}:
+                            {% if "SPF" not in report.additional_data.message_translated and "DMARC" not in report.additional_data.message_translated %}
+                                {% with type=report.additional_data.type %}
+                                    {% trans %}Problem with the {{ type }} mechanism:{% endtrans %}
+                                {% endwith %}
+                            {% endif %}
+
+                            {{ report.additional_data.message_translated|nl2br }}
+
+                            {% if report.additional_data.is_for_parent_domain %}
+                                {% with top_level_target=report.top_level_target, target=report.target %}
+                                    <b>{% trans %}For the DMARC mechanism to work properly on {{ top_level_target }}, the record needs to be configured on {{ target }} (one level below the public suffix, i.e. the domain where everybody can register subdomains - e.g. .eu or .co.uk).{% endtrans %}</b>
+                                {% endwith %}
+                            {% endif %}
+                        {{ report_meta(report) }}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        <p>
+            {{ _("These mechanisms greatly increase the chance that the recipient server will reject a spoofed message.")|safe }}
+            {{ _("Even if a domain is not used to send e-mails, SPF and DMARC records are needed to reduce the possibility to spoof e-mails.")|safe }}
+        </p>
+    </li>
+{% endif %}

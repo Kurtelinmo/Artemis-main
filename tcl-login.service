@@ -1,0 +1,14 @@
+[Unit]
+Description=TCL Web Scanner Login Service
+After=network.target
+
+[Service]
+Type=simple
+User=localadmin
+WorkingDirectory=/home/localadmin/artemis
+ExecStart=/usr/bin/python3 /home/localadmin/artemis/login_server.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

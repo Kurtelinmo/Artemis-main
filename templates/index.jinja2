@@ -1,0 +1,55 @@
+{% extends "components/base.jinja2" %}
+
+{% block main %}
+    <h1>Analysed targets</h1>
+    <p>
+        Total pending tasks: {{ num_active_tasks }}
+    </p>
+
+    {% if has_analyses %}
+        <table id="analysis_list" class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Created at</th>
+                    <th scope="col">Target</th>
+                    <th scope="col">Tag</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+        </table>
+        <p>
+            <a class="btn btn-primary" href="/results?task_filter=interesting">Show results for all targets</a>
+
+            {% if has_finished_analyses %}
+                <a class="btn btn-success" href="/remove-finished-analyses">Remove finished analyses</a>
+            {% endif %}
+        </p>
+        <p>
+            Hint: Browse to the <a href="/queue">task queue</a> to see how the tasks are progressing.
+        </p>
+    {% else %}
+        No targets have yet been analysed. <a href="/add">Analyze targets.</a>
+    {% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $(document).ready(function() {
+            const table = $("#analysis_list").dataTable({
+                ajax: {{ api_url|tojson }},  // we want to prevent & being converted to &amp; here
+                pageLength: 10,
+                serverSide: true,
+                columnDefs: [{
+                    "targets": [3, 4],
+                    "orderable": false
+                }]
+            });
+
+            table.on('draw.dt', function () {
+                $('[data-bs-toggle="tooltip"]').tooltip();
+            });
+        })
+    </script>
+{% endblock %}

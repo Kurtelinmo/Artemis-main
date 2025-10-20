@@ -1,0 +1,43 @@
+[tool.isort]
+profile = "black"
+
+[tool.black]
+line-length = 120
+
+[tool.liccheck]
+authorized_licenses = [
+    "bsd",
+    "apache 2.0",
+    "Apache-2.0",
+    "Apache-2.0 AND MIT",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "MIT AND Python-2.0",
+    "Apache License 2.0",
+    "apache software",
+    "isc",
+    "isc license (iscl)",
+    "LGPL-2.1",
+    "gnu lesser general public license v2 or later (lgplv2+)",
+    "gnu library or lesser general public license (lgpl)",
+    "mozilla public license 2.0 (mpl 2.0)",
+    "mit",
+    "python software foundation",
+    "PSF-2.0",
+    "the unlicense (unlicense)",
+    "Apache-2.0 AND BSD-2-Clause",
+]
+
+[tool.liccheck.authorized_packages]
+# The license name in the package is too generic ("DFSG approved") to be whitelisted in `authorized_licenses`
+dkimpy = "1.1.8"
+
+# BSD, not properly provided in package metadata
+karton-core = "5.0.0"
+libmailgoose = "1.3.3"
+
+# Apache 2, not properly provided in package metadata
+aiofiles = "0.7.0"
+
+# Apache 2 (https://github.com/c0fec0de/anytree), not properly provided in package metadata
+anytree = "2.11.1"

@@ -1,0 +1,83 @@
+#!/bin/bash
+
+cd $(dirname $0)/..
+
+exists() {
+    [ -e "$1" ]
+}
+
+if ! exists .env; then
+    cp env.example .env
+    ENV_MESSAGE="\e[1mThe .env file has been created. You can access it later to configure any settings you want to change according to https://artemis-scanner.readthedocs.io/en/latest/user-guide/configuration.html .\e[0m"
+else
+    ENV_MESSAGE=""
+fi
+
+
+if [[ $(uname -m) != "arm"* ]]; then
+    PROFILE='--profile not-arm'
+else
+    echo "Some modules are not supported on CPUs with ARM architecture - not starting them. "
+    echo "To make use of all Artemis features, we recommend using an x86 system."
+    PROFILE=
+fi
+
+if exists Artemis-modules-extra; then
+    ADDITIONAL_OPTIONS=--scale=karton-sqlmap=10
+else
+    ADDITIONAL_OPTIONS=
+fi
+
+./scripts/run_docker_compose stop
+./scripts/run_docker_compose $PROFILE up -d --remove-orphans --build \
+    --scale=karton-identifier=3 \
+    --scale=karton-port_scanner=5 \
+    --scale=karton-wordpress_plugins=5 \
+    --scale=karton-nuclei=10 \
+    --scale=karton-bruter=10 \
+    $ADDITIONAL_OPTIONS
+
+if [ $? -eq 0 ]; then
+    echo "Waiting for Artemis to start..."
+    for i in `seq 1 120`; do
+        if [ "`./scripts/run_docker_compose ps -q web --status running`" != "" ]; then
+            break
+        fi
+    done
+
+    if [ "`./scripts/run_docker_compose ps -q web --status running`" == "" ]; then
+        echo "Artemis web container doesn't appear to have started. Run ./scripts/run_docker_compose logs to view the logs."
+    else
+        ./scripts/run_docker_compose run --no-deps --entrypoint=bash karton-logger /wait-for-it.sh -q -t 60 web:5000
+
+        echo "Artemis started in the background. Browse to http://127.0.0.1:5000 and scan!"
+        echo
+        echo "To view the logs, use:"
+        echo "./scripts/run_docker_compose logs  # this will print all logs"
+        echo "./scripts/run_docker_compose logs  -f # this will print all logs and start printing any new logs as they appear"
+        echo "./scripts/run_docker_compose logs  --tail=0 -f # this will start printing any new logs as they appear"
+    fi
+fi
+
+echo -e $ENV_MESSAGE
+
+(
+    source .env
+
+    if [ -z "$CUSTOM_USER_AGENT" ]; then
+        echo "We strongly recommend to set the CUSTOM_USER_AGENT setting: https://artemis-scanner.readthedocs.io/en/latest/user-guide/cooperation-with-scanned-entities.html"
+    fi
+)
+
+if ! exists Artemis-modules-extra; then
+    echo
+    echo "We recommend you to add additional Artemis modules from https://github.com/CERT-Polska/Artemis-modules-extra/ "
+    echo "- these modules haven’t been included in core due to their licenses (e.g. GPL or AGPL), but provide additional "
+    echo "features such as e.g. SSL verification (certificate validity, proper redirect, etc.), subdomain takeover check or SQL "
+    echo "injection check."
+    echo
+    echo "CERT PL finds tens of thousands of misconfigured SSL and hundreds of SQL injections using these modules."
+    echo
+    echo "To set up Artemis-modules-extra, clone https://github.com/CERT-Polska/Artemis-modules-extra/ inside "
+    echo "the Artemis directory and run ./scripts/start."
+fi

@@ -1,0 +1,30 @@
+.vagrant
+Procfile
+.pass
+backup.tar.gz
+# Nginx merge_slashes path traversal
+///////../../../etc/passwd
+db.sql
+paybynet.log
+backup.sql
+appsettings.json
+graph
+database.sql
+adminbackups
+source-code
+mail/temp/
+webmail/temp/
+errors
+.env
+.htaccess
+.htpasswd
+.ssh/id_rsa
+app_dev.php
+TEST
+_vti_bin
+sites/
+sites/all/
+sites/all/modules/
+sites/all/libraries/
+# Sometimes the file is not interpreted by the server - let's check the path
+wp-config.php

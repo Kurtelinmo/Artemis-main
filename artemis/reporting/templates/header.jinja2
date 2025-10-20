@@ -1,0 +1,31 @@
+{% macro report_meta(report) %}
+    {% if report.is_subsequent_reminder %}
+        <p>
+            {% trans %}This problem has already been reported in previous notifications.{% endtrans %}
+        </p>
+    {% endif %}
+    {% if report.target_is_ip_address__as_property and report.last_domain %}
+        <p>
+            {% trans %}At the moment of the scanning, this was the IP address of {% endtrans %} {{ report.last_domain }}
+        </p>
+    {% endif %}
+{% endmacro %}
+
+{% if "skip_html_and_body_tags" not in data.custom_template_arguments %}
+    <html>
+        <head>
+            <meta charset="UTF-8">
+        </head>
+        <style>
+            ul {
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+        </style>
+        <body>
+{% endif %}
+
+        {% if custom_header_text is defined %}
+            {{ custom_header_text() }}
+        {% endif %}
+        <ol>

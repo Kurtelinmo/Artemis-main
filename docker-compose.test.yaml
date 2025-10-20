@@ -1,0 +1,257 @@
+services:
+  test-e2e:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    entrypoint: ""
+    env_file: env.test
+    command: python -m unittest discover test.e2e
+    volumes:
+      # We don't copy the test code into the image so that we don't pollute production image
+      # with test data.
+      - ./test/:/opt/test/
+      - ./docker/karton.ini:/etc/karton/karton.ini
+      - data-test:/data/
+
+  test:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    entrypoint: ""
+    command: bash -c "alembic upgrade head && unittest-parallel -j 4 -t . -s test.modules && unittest-parallel -j 4 -t . -s test.reporting && unittest-parallel -j 4 -t . -s test.unit"
+    environment:
+      TEST_REDIS_HOST: test-redis
+      TEST_REDIS_PORT: 6379
+      BRUTER_FILE_LIST: full
+      RUNNING_TESTS: "true"
+
+      # Use only one provider to speed up the tests
+      SUBDOMAIN_ENUMERATION_GAU_ADDITIONAL_OPTIONS: "--providers wayback"
+
+      SQL_INJECTION_STOP_ON_FIRST_MATCH: False
+
+      NUCLEI_INTERACTSH_SERVER: https://interactsh.lab.cert.pl/
+
+      POSTMAN_MAIL_FROM: artemis@localhost.com
+      POSTMAN_MAIL_TO: artemis@localhost.com
+
+      REQUESTS_PER_SECOND: 0
+      CUSTOM_PORT_SCANNER_PORTS: 21,80,6379
+      NUCLEI_CHECK_TEMPLATE_LIST: False
+    env_file: env.test
+    volumes:
+      # We don't copy the test code into the image so that we don't pollute production image
+      # with test data.
+      - ./test/:/opt/test/
+      - ./docker/karton.ini:/etc/karton/karton.ini
+
+  test-redis:
+    image: redis:7.0.5
+
+  postgres-test:
+    image: postgres
+    restart: always
+    shm_size: 256mb
+    environment:
+      POSTGRES_DB: artemis
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+  sql-injection-test-postgres:
+    image: postgres
+    restart: always
+    shm_size: 256mb
+    environment:
+      POSTGRES_DB: artemis
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+  sql-injection-test-mysql:
+    image: mysql:5.6
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+
+  test-dast-vuln-app:
+    build:
+      context: .
+      dockerfile: test/data/dast_vuln_app/Dockerfile
+    volumes:
+      - ./test/data/dast_vuln_app/:/app/
+
+  test-flask-vulnerable-api:
+    build:
+      context: .
+      dockerfile: test/data/flask_vulnerable_api/Dockerfile
+    volumes:
+      - ./test/data/flask_vulnerable_api/:/app/
+
+  test-service-with-exposed-apache-config:
+    image: php:7.4-apache
+    volumes:
+      - ./test/data/exposed_apache_config/:/var/www/html/
+
+  test-service-with-bruteable-files:
+    image: php:7.4-apache
+    volumes:
+      - ./test/data/bruteable_files/:/var/www/html/
+
+  test-robots-service:
+    image: nginx:latest
+    volumes:
+      - ./test/data/robots/default.conf:/etc/nginx/conf.d/default.conf
+      - ./test/data/robots/:/usr/share/nginx/html/
+
+  test-php-easy-admin-password:
+    image: php:8.0-apache
+    volumes:
+      - ./test/data/php_easy_admin_password/:/var/www/html/
+
+  test-php-mock-CVE-2020-28976:
+    image: php:8.0-apache
+    volumes:
+      - ./test/data/mock_CVE-2020-28976/:/var/www/html/
+
+  test-php-403-bypass:
+    image: php:8.0-apache
+    volumes:
+      - ./test/data/php_403_bypass/:/var/www/html/
+
+  test-php-xss-but-not-on-homepage:
+    image: php:8.0-apache
+    volumes:
+      - ./test/data/php_xss_but_not_on_homepage/:/var/www/html/
+
+  test-ftp-server-with-easy-password:
+    image: stilliard/pure-ftpd:latest
+    environment:
+        - FTP_USER_NAME=admin
+        - FTP_USER_PASS=12345
+        - FTP_USER_HOME=/dev/shm
+
+  test-old-joomla:
+    image: joomla:4.0.5-php8.0-apache  # this is an old image on purpose
+    environment:
+      JOOMLA_DB_HOST: test-old-joomla-mysql
+      JOOMLA_DB_PASSWORD: example
+
+  test-old-joomla-mysql:
+    image: mysql:5.6
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+
+  test-smtp-server:
+    hostname: test-smtp-server.artemis
+    image: bytemark/smtp
+
+  test-nginx:
+    image: nginx:latest
+
+  test-service-with-exposed-git:
+    image: nginx:latest
+    volumes:
+      - ./test/data/git/git/:/usr/share/nginx/html/.git/
+
+  test-old-wordpress:
+    image: wordpress:5.9.3-apache
+    environment:
+      WORDPRESS_DB_HOST: test-old-wordpress-mysql
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_PASSWORD: example
+      WORDPRESS_DB_NAME: example
+
+  test-old-wordpress-mysql:
+    image: mysql:5.6
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+
+  test-service-with-directory-index:
+    image: nginx:latest
+    volumes:
+      - ./test/data/directory_index/default.conf:/etc/nginx/conf.d/default.conf
+      - ./test/data/directory_index/:/usr/share/nginx/html/
+
+  test-wordpress-easy-password:
+    image: wordpress:6.3.2-apache
+    environment:
+      WORDPRESS_DB_HOST: test-wordpress-easy-password-mysql
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_PASSWORD: example
+      WORDPRESS_DB_NAME: example
+
+  test-wordpress-easy-password-mysql:
+    image: mysql:5.6
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+
+  test-mysql-with-easy-password:
+    image: mysql:5.6
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+
+  test-ssh-with-easy-password:
+    image: lscr.io/linuxserver/openssh-server:latest
+    environment:
+      PASSWORD_ACCESS: true
+      USER_PASSWORD: password
+      USER_NAME: user
+    ports:
+      - "2222:2222"
+
+  test-postgresql-with-easy-password:
+    image: postgres
+    environment:
+      POSTGRES_USER: example
+      POSTGRES_PASSWORD: example
+
+  test-phpmyadmin-easy-password-subdirectory-nginx:
+    image: nginx
+    volumes:
+      - ./test/data/phpmyadmin_subdirectory_proxy/default.conf:/etc/nginx/conf.d/default.conf
+
+  test-phpmyadmin-easy-password-subdirectory:
+    image: phpmyadmin
+    environment:
+      - PMA_ABSOLUTE_URI=http://test-phpmyadmin-easy-password-subdirectory-nginx/phpmyadmin/
+      - PMA_HOST=test-phpmyadmin-easy-password-mysql
+
+  test-phpmyadmin-easy-password:
+    image: phpmyadmin
+    environment:
+      - PMA_HOST=test-phpmyadmin-easy-password-mysql
+
+  test-phpmyadmin-easy-password-mysql:
+    image: mariadb:10.3
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+
+  test-service-with-bruteable-files-sql-dumps:
+    image: php:7.4-apache
+    volumes:
+      - ./test/reporting/data/bruteable_files/sql_dumps/:/var/www/html/
+
+  test-service-with-bruteable-files-htpasswd:
+    image: php:7.4-apache
+    volumes:
+      - ./test/reporting/data/bruteable_files/htpasswd/:/var/www/html/
+
+  test-apache-with-lfi:
+    image: php:7.4-apache
+    volumes:
+      - ./test/data/lfi/:/var/www/html/
+
+  test-apache-with-sql-injection-postgres:
+    build:
+      dockerfile: test/images/php-postgres/Dockerfile
+    command: systemctl start apache2.service
+    volumes:
+      - ./test/data/sql_injection_postgres/:/var/www/html/
+
+  test-apache-with-sql-injection-mysql:
+    build:
+      dockerfile: test/images/php-mysql/Dockerfile
+    command: systemctl start apache2.service
+    volumes:
+      - ./test/data/sql_injection_mysql/:/var/www/html/
+
+volumes:
+  data-test:

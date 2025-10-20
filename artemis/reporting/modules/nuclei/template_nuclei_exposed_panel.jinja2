@@ -1,0 +1,42 @@
+{% if "nuclei_exposed_panel" in data.contains_type %}
+     {% set contains_db_admin = namespace(data=0) %}
+
+    <li>{% trans %}The following addresses contain login panels, analytics services, management panels etc.:{% endtrans %}
+        <ul>
+            {% for report in data.reports %}
+                {% if report.report_type == "nuclei_exposed_panel" %}
+                    <li>
+                        {{ report.target }}: {{ report.additional_data.description_translated }}
+                        {{ report_meta(report) }}
+                        {% if "phpmyadmin" in report.target.lower() or "phpppgadmin" in report.target.lower() %}
+                            {% set contains_db_admin.data = 1 %}
+                        {% endif %}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        <p>
+            {% trans trimmed %}
+                To decrease the probability of an attack (caused by an attacker using a leaked password,
+                by one of the accounts having a weak password, or by vulnerabilities in the service), we
+                recommend to have as few such publicly accessible services as possible.
+            {% endtrans %}
+        </p>
+        {% if contains_db_admin.data %}
+            <p>
+                {% trans trimmed %}
+                    A password leak may be caused by an accidentally exposed configuration file such as a backup of
+                    <tt>/wp-config.php</tt> or by a local file inclusion vulnerability. Such mistakes are
+                    frequent, and lack of publicly exposed database management panels makes it significantly
+                    harder to perform an attack.
+                {% endtrans %}
+            </p>
+        {% endif %}
+        <p>
+            {% trans trimmed %}
+                We recommend that such resources are only available in an internal network, using a VPN
+                or from a restricted set of IP addresses.
+            {% endtrans %}
+        </p>
+    </li>
+{% endif %}

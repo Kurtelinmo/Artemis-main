@@ -1,0 +1,11 @@
+{% extends "components/base.jinja2" %}
+
+{% block main %}
+    <h1>Restart all crashed tasks</h1>
+
+    <form method="POST" action="/restart-crashed-tasks">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+
+        <input type="submit" class="btn btn-primary" value="restart" />
+    </form>
+{% endblock %}
