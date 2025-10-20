@@ -118,8 +118,8 @@ class LoginHandler(BaseHTTPRequestHandler):
             self.wfile.write(html.encode('utf-8'))
 
 if __name__ == '__main__':
-    server = HTTPServer(('0.0.0.0', 8080), LoginHandler)
-    print('Servidor de login con BD iniciado en puerto 8080')
-    print('URL: http://200.229.229.27:8080')
-    print('Debug: http://200.229.229.27:8080/debug')
+    server = HTTPServer(('0.0.0.0', 8090), LoginHandler)
+    print('Servidor de login con BD iniciado en puerto 8090')
+    print('URL: http://200.229.229.27:8090')
+    print('Debug: http://200.229.229.27:8090/debug')
     server.serve_forever()

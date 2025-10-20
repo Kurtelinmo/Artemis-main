@@ -78,14 +78,17 @@ if not Config.Miscellaneous.API_TOKEN:
 
 @router.get("/", include_in_schema=False)
 def get_root(request: Request) -> Response:
-    # Verificar si hay parámetros de autenticación
+    # Verificar si hay parámetros de autenticación solo en acceso directo
     read_param = request.query_params.get('read')
     write_param = request.query_params.get('write')
     user_param = request.query_params.get('user')
     
-    # Si no hay parámetros de autenticación, redirigir al login
-    if not (read_param and write_param and user_param):
-        return RedirectResponse(url="http://200.229.229.27:8080", status_code=302)
+    # Solo redirigir si es acceso directo sin parámetros y sin referer interno
+    referer = request.headers.get('referer', '')
+    is_internal_navigation = '200.229.229.27:5000' in referer
+    
+    if not (read_param and write_param and user_param) and not is_internal_navigation:
+        return RedirectResponse(url="http://200.229.229.27:8090", status_code=302)
     
     karton_state = KartonState(backend=KartonBackend(config=KartonConfig()))
     has_analyses = len(list(db.get_paginated_analyses(0, 1, [ColumnOrdering("target", True)]).data)) > 0
@@ -110,14 +113,6 @@ def get_root(request: Request) -> Response:
 
 @router.get("/add", include_in_schema=False)
 def get_add_form(request: Request, csrf_protect: CsrfProtect = Depends()) -> Response:
-    # Verificar autenticación
-    if not (request.query_params.get('read') and request.query_params.get('write') and request.query_params.get('user')):
-        return RedirectResponse(url="http://200.229.229.27:8080", status_code=302)
-    
-    # Verificar permisos de escritura
-    if request.query_params.get('write') != 'True':
-        raise HTTPException(status_code=403, detail="Sin permisos de escritura")
-    
     binds = sorted(get_binds_that_can_be_disabled(), key=lambda bind: bind.identity.lower())
 
     return csrf.csrf_form_template_response(
