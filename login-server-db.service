@@ -1,0 +1,14 @@
+[Unit]
+Description=Login Server DB Service
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/path/to/Artemis-main
+ExecStart=/usr/bin/python3 /path/to/Artemis-main/login_server_db.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
