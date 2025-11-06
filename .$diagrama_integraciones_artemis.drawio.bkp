@@ -1,0 +1,356 @@
+<mxfile host="app.diagrams.net" modified="2024-01-15T10:00:00.000Z" agent="5.0" etag="abc123" version="22.1.16" type="device">
+  <diagram name="Artemis-Integraciones" id="artemis-flow">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- CAPA DE AUTENTICACIÓN -->
+        <mxCell id="auth-layer" value="CAPA DE AUTENTICACIÓN" style="swimlane;whiteSpace=wrap;html=1;fillColor=#e1f5fe;strokeColor=#01579b;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="320" height="200" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="login-db" value="login_server_db.py&#xa;Puerto 8090&#xa;Auth con BD SQLite" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#1976d2;" vertex="1" parent="auth-layer">
+          <mxGeometry x="20" y="40" width="120" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="login-simple" value="login_server.py&#xa;Puerto 8080&#xa;Auth hardcoded" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#1976d2;" vertex="1" parent="auth-layer">
+          <mxGeometry x="160" y="40" width="120" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="login-flask" value="login_app.py&#xa;Puerto 8080&#xa;Flask Login" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#1976d2;" vertex="1" parent="auth-layer">
+          <mxGeometry x="90" y="120" width="120" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- CAPA WEB PRINCIPAL -->
+        <mxCell id="web-layer" value="CAPA WEB PRINCIPAL" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f3e5f5;strokeColor=#7b1fa2;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="400" y="40" width="280" height="200" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="web-interface" value="Web Interface&#xa;Puerto 5000&#xa;FastAPI + Jinja2&#xa;frontend.py" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1bee7;strokeColor=#8e24aa;" vertex="1" parent="web-layer">
+          <mxGeometry x="20" y="40" width="120" height="80" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="api-rest" value="API REST&#xa;/api/*&#xa;FastAPI&#xa;api.py" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1bee7;strokeColor=#8e24aa;" vertex="1" parent="web-layer">
+          <mxGeometry x="160" y="40" width="100" height="80" as="geometry" />
+        </mxCell>
+        
+        <!-- CAPA DE ORQUESTACIÓN -->
+        <mxCell id="orchestration-layer" value="CAPA DE ORQUESTACIÓN" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#f57c00;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="720" y="40" width="400" height="200" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="karton-system" value="Karton System&#xa;Coordinador tareas&#xa;karton-system" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcc02;strokeColor=#d84315;" vertex="1" parent="orchestration-layer">
+          <mxGeometry x="20" y="40" width="100" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="producer" value="Producer&#xa;Creador tareas&#xa;producer.py" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcc02;strokeColor=#d84315;" vertex="1" parent="orchestration-layer">
+          <mxGeometry x="140" y="40" width="100" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="classifier" value="Classifier&#xa;Clasificador targets&#xa;classifier.py" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcc02;strokeColor=#d84315;" vertex="1" parent="orchestration-layer">
+          <mxGeometry x="260" y="40" width="120" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="karton-dashboard" value="Karton Dashboard&#xa;Monitoreo&#xa;karton-dashboard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcc02;strokeColor=#d84315;" vertex="1" parent="orchestration-layer">
+          <mxGeometry x="80" y="120" width="120" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- CAPA DE DATOS -->
+        <mxCell id="data-layer" value="CAPA DE DATOS" style="swimlane;whiteSpace=wrap;html=1;fillColor=#e8f5e8;strokeColor=#2e7d32;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="40" y="280" width="400" height="120" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="postgres" value="PostgreSQL&#xa;BD Principal" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#c8e6c9;strokeColor=#388e3c;" vertex="1" parent="data-layer">
+          <mxGeometry x="30" y="40" width="80" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="redis" value="Redis&#xa;Cola tareas" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#c8e6c9;strokeColor=#388e3c;" vertex="1" parent="data-layer">
+          <mxGeometry x="140" y="40" width="80" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="s3mock" value="S3Mock&#xa;Almacenamiento" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#c8e6c9;strokeColor=#388e3c;" vertex="1" parent="data-layer">
+          <mxGeometry x="250" y="40" width="80" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- MÓDULOS DE ESCANEO -->
+        <mxCell id="modules-layer" value="MÓDULOS DE ESCANEO" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fce4ec;strokeColor=#c2185b;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="480" y="280" width="640" height="280" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="port-scanner" value="Port Scanner" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8bbd9;strokeColor=#ad1457;" vertex="1" parent="modules-layer">
+          <mxGeometry x="20" y="40" width="90" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="dns-scanner" value="DNS Scanner" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8bbd9;strokeColor=#ad1457;" vertex="1" parent="modules-layer">
+          <mxGeometry x="130" y="40" width="90" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="webapp-id" value="Webapp ID" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8bbd9;strokeColor=#ad1457;" vertex="1" parent="modules-layer">
+          <mxGeometry x="240" y="40" width="90" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="nuclei" value="Nuclei" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8bbd9;strokeColor=#ad1457;" vertex="1" parent="modules-layer">
+          <mxGeometry x="350" y="40" width="90" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="bruter" value="Bruter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8bbd9;strokeColor=#ad1457;" vertex="1" parent="modules-layer">
+          <mxGeometry x="460" y="40" width="90" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="vcs" value="VCS Scanner" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8bbd9;strokeColor=#ad1457;" vertex="1" parent="modules-layer">
+          <mxGeometry x="20" y="100" width="90" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="wp-scanner" value="WP Scanner" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8bbd9;strokeColor=#ad1457;" vertex="1" parent="modules-layer">
+          <mxGeometry x="130" y="100" width="90" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="joomla-scanner" value="Joomla Scanner" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8bbd9;strokeColor=#ad1457;" vertex="1" parent="modules-layer">
+          <mxGeometry x="240" y="100" width="90" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="sql-injection" value="SQL Injection" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8bbd9;strokeColor=#ad1457;" vertex="1" parent="modules-layer">
+          <mxGeometry x="350" y="100" width="90" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="lfi-detector" value="LFI Detector" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8bbd9;strokeColor=#ad1457;" vertex="1" parent="modules-layer">
+          <mxGeometry x="460" y="100" width="90" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="subdomain-enum" value="Subdomain Enum" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8bbd9;strokeColor=#ad1457;" vertex="1" parent="modules-layer">
+          <mxGeometry x="20" y="160" width="90" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="ssh-bruter" value="SSH Bruter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8bbd9;strokeColor=#ad1457;" vertex="1" parent="modules-layer">
+          <mxGeometry x="130" y="160" width="90" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="mysql-bruter" value="MySQL Bruter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8bbd9;strokeColor=#ad1457;" vertex="1" parent="modules-layer">
+          <mxGeometry x="240" y="160" width="90" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="ftp-bruter" value="FTP Bruter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8bbd9;strokeColor=#ad1457;" vertex="1" parent="modules-layer">
+          <mxGeometry x="350" y="160" width="90" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="device-id" value="Device ID" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8bbd9;strokeColor=#ad1457;" vertex="1" parent="modules-layer">
+          <mxGeometry x="460" y="160" width="90" height="40" as="geometry" />
+        </mxCell>
+        
+        <!-- CAPA DE REPORTES -->
+        <mxCell id="reports-layer" value="CAPA DE REPORTES" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f1f8e9;strokeColor=#689f38;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="40" y="600" width="400" height="160" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="autoreporter" value="Autoreporter&#xa;Generador reportes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcedc8;strokeColor=#8bc34a;" vertex="1" parent="reports-layer">
+          <mxGeometry x="30" y="40" width="100" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="export-system" value="Export System&#xa;Exportación" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcedc8;strokeColor=#8bc34a;" vertex="1" parent="reports-layer">
+          <mxGeometry x="150" y="40" width="100" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="templates" value="Templates&#xa;Plantillas" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcedc8;strokeColor=#8bc34a;" vertex="1" parent="reports-layer">
+          <mxGeometry x="270" y="40" width="100" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- SERVICIOS DE SOPORTE -->
+        <mxCell id="support-layer" value="SERVICIOS DE SOPORTE" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fff8e1;strokeColor=#ff8f00;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="480" y="600" width="640" height="160" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="metrics" value="Metrics&#xa;Prometheus" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffecb3;strokeColor=#ffa000;" vertex="1" parent="support-layer">
+          <mxGeometry x="30" y="40" width="80" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="cleanup" value="Cleanup&#xa;Limpieza" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffecb3;strokeColor=#ffa000;" vertex="1" parent="support-layer">
+          <mxGeometry x="130" y="40" width="80" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="autoarchiver" value="Autoarchiver&#xa;Archivado" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffecb3;strokeColor=#ffa000;" vertex="1" parent="support-layer">
+          <mxGeometry x="230" y="40" width="80" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="logger" value="Logger&#xa;Registro" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffecb3;strokeColor=#ffa000;" vertex="1" parent="support-layer">
+          <mxGeometry x="330" y="40" width="80" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- FLUJOS DE CONEXIÓN -->
+        
+        <!-- Login a Web -->
+        <mxCell id="flow1" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#1976d2;strokeWidth=2;" edge="1" parent="1" source="login-db" target="web-interface">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="200" y="140" as="sourcePoint" />
+            <mxPoint x="250" y="90" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="flow2" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#1976d2;strokeWidth=2;" edge="1" parent="1" source="login-simple" target="web-interface">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="320" y="110" as="sourcePoint" />
+            <mxPoint x="370" y="60" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="flow3" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#1976d2;strokeWidth=2;" edge="1" parent="1" source="login-flask" target="web-interface">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="240" y="180" as="sourcePoint" />
+            <mxPoint x="290" y="130" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Web a Orquestación -->
+        <mxCell id="flow4" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#8e24aa;strokeWidth=2;" edge="1" parent="1" source="web-interface" target="producer">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="540" y="120" as="sourcePoint" />
+            <mxPoint x="590" y="70" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Producer a Classifier -->
+        <mxCell id="flow5" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#d84315;strokeWidth=2;" edge="1" parent="1" source="producer" target="classifier">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="900" y="110" as="sourcePoint" />
+            <mxPoint x="950" y="60" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Classifier a Karton System -->
+        <mxCell id="flow6" value="" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0;entryDx=0;entryDy=0;strokeColor=#d84315;strokeWidth=2;" edge="1" parent="1" source="classifier" target="karton-system">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="980" y="140" as="sourcePoint" />
+            <mxPoint x="1030" y="90" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Karton System a Módulos -->
+        <mxCell id="flow7" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#d84315;strokeWidth=3;" edge="1" parent="1" source="karton-system" target="modules-layer">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="790" y="160" as="sourcePoint" />
+            <mxPoint x="840" y="110" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Web a Datos -->
+        <mxCell id="flow8" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#8e24aa;strokeWidth=2;" edge="1" parent="1" source="web-interface" target="postgres">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="480" y="200" as="sourcePoint" />
+            <mxPoint x="530" y="150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Karton System a Redis -->
+        <mxCell id="flow9" value="" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0;entryDx=0;entryDy=15;strokeColor=#d84315;strokeWidth=2;" edge="1" parent="1" source="karton-system" target="redis">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="740" y="140" as="sourcePoint" />
+            <mxPoint x="790" y="90" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Módulos a PostgreSQL -->
+        <mxCell id="flow10" value="" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0;entryDx=0;entryDy=15;strokeColor=#ad1457;strokeWidth=3;" edge="1" parent="1" source="modules-layer" target="postgres">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="480" y="560" as="sourcePoint" />
+            <mxPoint x="530" y="510" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- PostgreSQL a Autoreporter -->
+        <mxCell id="flow11" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#388e3c;strokeWidth=2;" edge="1" parent="1" source="postgres" target="autoreporter">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="110" y="400" as="sourcePoint" />
+            <mxPoint x="160" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Autoreporter a Export System -->
+        <mxCell id="flow12" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#8bc34a;strokeWidth=2;" edge="1" parent="1" source="autoreporter" target="export-system">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="130" y="670" as="sourcePoint" />
+            <mxPoint x="180" y="620" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Export System a Templates -->
+        <mxCell id="flow13" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#8bc34a;strokeWidth=2;" edge="1" parent="1" source="export-system" target="templates">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="250" y="670" as="sourcePoint" />
+            <mxPoint x="300" y="620" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Autoreporter a S3Mock -->
+        <mxCell id="flow14" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=-15;strokeColor=#8bc34a;strokeWidth=2;" edge="1" parent="1" source="autoreporter" target="s3mock">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="130" y="640" as="sourcePoint" />
+            <mxPoint x="180" y="590" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Karton System a Dashboard -->
+        <mxCell id="flow15" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#d84315;strokeWidth=2;" edge="1" parent="1" source="karton-system" target="karton-dashboard">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="770" y="130" as="sourcePoint" />
+            <mxPoint x="820" y="80" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Karton System a Servicios de Soporte -->
+        <mxCell id="flow16" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0;entryDx=0;entryDy=0;strokeColor=#d84315;strokeWidth=2;" edge="1" parent="1" source="karton-system" target="support-layer">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="820" y="140" as="sourcePoint" />
+            <mxPoint x="870" y="90" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- PostgreSQL a Cleanup -->
+        <mxCell id="flow17" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=1;exitDx=0;exitDy=-15;entryX=0;entryY=1;entryDx=0;entryDy=0;strokeColor=#388e3c;strokeWidth=2;" edge="1" parent="1" source="postgres" target="cleanup">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="110" y="385" as="sourcePoint" />
+            <mxPoint x="160" y="335" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- ETIQUETAS DE FLUJO -->
+        <mxCell id="label1" value="1. LOGIN" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=12;fontColor=#1976d2;" vertex="1" parent="1">
+          <mxGeometry x="300" y="90" width="60" height="30" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="label2" value="2. WEB ACCESS" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=12;fontColor=#8e24aa;" vertex="1" parent="1">
+          <mxGeometry x="600" y="90" width="80" height="30" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="label3" value="3. TASK CREATION" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=12;fontColor=#d84315;" vertex="1" parent="1">
+          <mxGeometry x="900" y="90" width="100" height="30" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="label4" value="4. SCANNING" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=12;fontColor=#ad1457;" vertex="1" parent="1">
+          <mxGeometry x="800" y="250" width="80" height="30" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="label5" value="5. REPORTING" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=12;fontColor=#8bc34a;" vertex="1" parent="1">
+          <mxGeometry x="200" y="570" width="80" height="30" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="label6" value="6. LOGOUT" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=12;fontColor=#f44336;" vertex="1" parent="1">
+          <mxGeometry x="420" y="150" width="60" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- LOGOUT FLOW -->
+        <mxCell id="logout-flow" value="" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0;entryDx=0;entryDy=0;strokeColor=#f44336;strokeWidth=2;dashed=1;" edge="1" parent="1" source="web-interface" target="login-db">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="420" y="140" as="sourcePoint" />
+            <mxPoint x="470" y="90" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- TÍTULO PRINCIPAL -->
+        <mxCell id="title" value="ARTEMIS - DIAGRAMA DE INTEGRACIONES&#xa;Flujo completo desde Login hasta Logout" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=16;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="450" y="10" width="400" height="30" as="geometry" />
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
